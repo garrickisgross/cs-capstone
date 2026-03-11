@@ -4,7 +4,12 @@
 
 {% block content %}
 
-Routes
+{% for order in data %}
 
+<div>{{ order }}</div>
+
+{% endfor %}
+
+length: {{ data|length }}
 {% endblock %}
 

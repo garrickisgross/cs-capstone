@@ -1,0 +1,12 @@
+<form hx-post="{{ data.url }}" class="w-50" hx-target="#result">
+{% for element in data.elements %}
+  <div class="mb-3">
+    <label for="{{ element.name }}" class="form-label">{{ element.name.capitalize() }}</label>
+    <input name="{{ element.name }}" type="{{ element.input_type }}" class="form-control" id="{{ element.name }}" aria-describedby="{{ element.name + 'Help' }}">
+    <div id="{{ element.name + 'Help' }}" class="form-text">{{ element.help_text }}</div>
+  </div>
+ {% endfor %}
+ <button type="submit" class="btn btn-primary">Submit</button>
+</form>
+
+<div id="result"></div>

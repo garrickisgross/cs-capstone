@@ -1,8 +1,7 @@
-from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi import FastAPI, Request
+from fastapi.responses import HTMLResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from uuid import uuid4
 from .models.form import FormData, FormElement
 
 app = FastAPI()
@@ -14,8 +13,6 @@ app.mount("/static", StaticFiles(directory="app/static"), name="static")
 # we will be using jinja templates, teaming up with htmx.
 templates = Jinja2Templates(directory="app/templates")
 
-app.orders_data = []
-app.routes_data = []
 
 @app.get("/", response_class=HTMLResponse)
 async def home(request: Request):
@@ -26,37 +23,22 @@ async def home(request: Request):
 
 @app.get("/orders", response_class=HTMLResponse)
 async def orders(request: Request):
-
-    # Form fields needed for page
     address = FormElement(name="address", input_type="text", help_text="Enter address for this order")
     city = FormElement(name="city", input_type="text", help_text="City")
-    st = FormElement(name="st", input_type="text", help_text="St")
+    st = FormElement(name"st", input_type="text", help_text="St")
     description = FormElement(name="description", input_type="text", help_text="Optional Description")
-
-
     elements = [address, city, st, description]
-    form = FormData(elements=elements, url="/create_order")
     return templates.TemplateResponse(
         request=request,
         name="orders.html",
-        context={ "data": form }
+        context={ "data": elements }
         )
-
-@app.post("/create_order", response_class=JSONResponse)
-async def create_order(request: Request, address: str = Form(...), city: str = Form(...), st: str = Form(...), description: str = Form(...)):
-    id = str(uuid4())
-    app.orders_data += [(id, address, city, st, description, None)] # eventually sqlite storage happens, final slot is route id. which is assigned at the route endpoint
-    print(app.orders_data)
-    response = { "create_order": "not_implemented" } # TODO: Add some checks here to determine if create was successful or not. 
-    return response
-   
 
 @app.get("/routes", response_class=HTMLResponse)
 async def routes(request: Request):
     return templates.TemplateResponse(
         request=request,
-        name="routes.html",
-        context={ "data": app.orders_data },
+        name="routes.html"
         )
 
 @app.get("/optimize", response_class=HTMLResponse)
