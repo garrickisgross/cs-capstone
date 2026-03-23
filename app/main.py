@@ -1,67 +1,41 @@
-from fastapi import FastAPI, Request, Form
-from fastapi.responses import HTMLResponse, JSONResponse
+from pathlib import Path
+
+from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
-from uuid import uuid4
-from .models.form import FormData, FormElement
 
-app = FastAPI()
+from .db.in_memory import InMemoryStorage
+from .routers.home import router as home_router
+from .routers.optimization import router as optimization_router
+from .routers.orders import router as orders_router
+from .routers.routes import router as routes_router
+from .services.optimization import OptimizationService
+from .services.orders import OrdersService
+from .services.routes import RoutesService
 
-
-# mount static directories.
-app.mount("/static", StaticFiles(directory="app/static"), name="static")
-
-# we will be using jinja templates, teaming up with htmx.
-templates = Jinja2Templates(directory="app/templates")
-
-app.orders_data = []
-app.routes_data = []
-
-@app.get("/", response_class=HTMLResponse)
-async def home(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="index.html"
-        )
-
-@app.get("/orders", response_class=HTMLResponse)
-async def orders(request: Request):
-
-    # Form fields needed for page
-    address = FormElement(name="address", input_type="text", help_text="Enter address for this order")
-    city = FormElement(name="city", input_type="text", help_text="City")
-    st = FormElement(name="st", input_type="text", help_text="St")
-    description = FormElement(name="description", input_type="text", help_text="Optional Description")
+APP_DIR = Path(__file__).resolve().parent
+STATIC_DIR = APP_DIR / "static"
+TEMPLATES_DIR = APP_DIR / "templates"
 
 
-    elements = [address, city, st, description]
-    form = FormData(elements=elements, url="/create_order")
-    return templates.TemplateResponse(
-        request=request,
-        name="orders.html",
-        context={ "data": form }
-        )
+def create_app() -> FastAPI:
+    app = FastAPI()
 
-@app.post("/create_order", response_class=JSONResponse)
-async def create_order(request: Request, address: str = Form(...), city: str = Form(...), st: str = Form(...), description: str = Form(...)):
-    id = str(uuid4())
-    app.orders_data += [(id, address, city, st, description, None)] # eventually sqlite storage happens, final slot is route id. which is assigned at the route endpoint
-    print(app.orders_data)
-    response = { "create_order": "not_implemented" } # TODO: Add some checks here to determine if create was successful or not. 
-    return response
-   
+    app.mount("/static", StaticFiles(directory=STATIC_DIR), name="static")
+    app.state.templates = Jinja2Templates(directory=str(TEMPLATES_DIR))
 
-@app.get("/routes", response_class=HTMLResponse)
-async def routes(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="routes.html",
-        context={ "data": app.orders_data },
-        )
+    storage = InMemoryStorage()
+    app.state.storage = storage
+    app.state.orders_service = OrdersService(storage)
+    app.state.routes_service = RoutesService(storage)
+    app.state.optimization_service = OptimizationService()
 
-@app.get("/optimize", response_class=HTMLResponse)
-async def optimize(request: Request):
-    return templates.TemplateResponse(
-        request=request,
-        name="optimize.html",
-        )
+    app.include_router(home_router)
+    app.include_router(orders_router)
+    app.include_router(routes_router)
+    app.include_router(optimization_router)
+
+    return app
+
+
+app = create_app()
