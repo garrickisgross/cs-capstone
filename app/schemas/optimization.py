@@ -1,6 +1,14 @@
 from pydantic import BaseModel
 
 
+class OptimizationSummaryData(BaseModel):
+    algorithm: str
+    order_count: int
+    original_distance: float
+    optimized_distance: float
+    distance_saved: float
+
+
 class OptimizationOrderItem(BaseModel):
     id: str
     address: str
@@ -9,12 +17,14 @@ class OptimizationOrderItem(BaseModel):
     description: str
     latitude: float
     longitude: float
-    route_id: str | None = None
+    optimized: bool
+    stop_number: int | None = None
 
 
 class OptimizationOrdersListData(BaseModel):
     title: str
     orders: list[OptimizationOrderItem]
+    summary: OptimizationSummaryData | None = None
     empty_message: str = "No orders available."
 
 

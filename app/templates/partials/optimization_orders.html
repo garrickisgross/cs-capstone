@@ -4,11 +4,51 @@
     <span class="text-secondary">{{ data.orders|length }} orders</span>
   </div>
 
+  {% if data.summary %}
+    <div class="row g-3 mb-3">
+      <div class="col-md-3">
+        <div class="border rounded p-3 h-100">
+          <div class="small text-secondary">Algorithm</div>
+          <div class="fw-semibold">{{ data.summary.algorithm }}</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="border rounded p-3 h-100">
+          <div class="small text-secondary">Original Distance</div>
+          <div class="fw-semibold">{{ "%.2f"|format(data.summary.original_distance) }} miles</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="border rounded p-3 h-100">
+          <div class="small text-secondary">Optimized Distance</div>
+          <div class="fw-semibold">{{ "%.2f"|format(data.summary.optimized_distance) }} miles</div>
+        </div>
+      </div>
+      <div class="col-md-3">
+        <div class="border rounded p-3 h-100">
+          <div class="small text-secondary">Distance Saved</div>
+          <div class="fw-semibold">{{ "%.2f"|format(data.summary.distance_saved) }} miles</div>
+        </div>
+      </div>
+    </div>
+  {% endif %}
+
   {% if data.orders %}
     <div class="list-group optimization-orders-list">
       {% for order in data.orders %}
         <article class="list-group-item optimization-order-item">
-          <div class="fw-semibold">{{ order.address }}</div>
+          <div class="d-flex align-items-center justify-content-between gap-3">
+            <div class="fw-semibold">
+              {% if order.stop_number %}
+                Stop {{ order.stop_number }}: {{ order.address }}
+              {% else %}
+                {{ order.address }}
+              {% endif %}
+            </div>
+            {% if order.optimized %}
+              <span class="badge text-bg-success">Optimized</span>
+            {% endif %}
+          </div>
           <div>{{ order.city }}, {{ order.st }}</div>
           {% if order.description %}
             <div class="small text-secondary">{{ order.description }}</div>

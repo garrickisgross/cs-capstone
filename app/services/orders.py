@@ -64,9 +64,9 @@ class OrdersService:
             description=order_input.description or "",
             latitude=geocode_result.latitude,
             longitude=geocode_result.longitude,
+            optimized=False,
         )
         self._storage.add_order(order)
-        print([stored_order.to_row() for stored_order in self._storage.list_orders()])
         return OrderCreatedMessage(
             message="Order created successfully.",
             success=True,

@@ -11,3 +11,11 @@ class StorageInterface(ABC):
     @abstractmethod
     def list_orders(self) -> list[StoredOrder]:
         pass
+
+    @abstractmethod
+    def list_unoptimized_orders(self) -> list[StoredOrder]:
+        pass
+
+    @abstractmethod
+    def mark_orders_optimized(self, order_ids: list[str]) -> None:
+        pass
