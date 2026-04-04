@@ -21,6 +21,7 @@ class CreateOrderInput(BaseModel):
 
 class OrderCreatedMessage(BaseModel):
     message: str
+    success: bool
 
 
 class StoredOrder(BaseModel):
@@ -29,14 +30,18 @@ class StoredOrder(BaseModel):
     city: str
     st: str
     description: str
+    latitude: float
+    longitude: float
     route_id: str | None = None
 
-    def to_row(self) -> tuple[str, str, str, str, str, str | None]:
+    def to_row(self) -> tuple[str, str, str, str, str, float, float, str | None]:
         return (
             self.id,
             self.address,
             self.city,
             self.st,
             self.description,
+            self.latitude,
+            self.longitude,
             self.route_id,
         )

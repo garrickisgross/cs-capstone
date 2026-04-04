@@ -1,1 +1,1 @@
-<div class="confirmation-bubble">{{ data.message }}</div>
+<div class="{{ 'confirmation-bubble' if data.success else 'error-bubble' }}">{{ data.message }}</div>

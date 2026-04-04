@@ -11,6 +11,7 @@ from ..services.orders import OrdersService
 router = APIRouter()
 
 
+@router.get("/", response_class=HTMLResponse)
 @router.get("/orders", response_class=HTMLResponse)
 async def orders(
     request: Request,
@@ -26,7 +27,7 @@ async def orders(
 
 
 @router.post("/create_order", response_class=HTMLResponse)
-async def create_order(
+def create_order(
     address: Annotated[str, Form(...)],
     city: Annotated[str, Form(...)],
     st: Annotated[str, Form(...)],

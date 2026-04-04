@@ -20,3 +20,17 @@ async def optimize(
         name="optimize.html",
         context={"data": page_data},
     )
+
+
+@router.post("/optimize/orders", response_class=HTMLResponse)
+async def optimize_orders(
+    request: Request,
+    templates: Jinja2Templates = Depends(get_templates),
+    service: OptimizationService = Depends(get_optimization_service),
+):
+    orders_list = service.build_optimized_orders_list()
+    return templates.TemplateResponse(
+        request=request,
+        name="partials/optimization_orders.html",
+        context={"data": orders_list},
+    )

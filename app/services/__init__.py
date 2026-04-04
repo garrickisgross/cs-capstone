@@ -1,5 +1,12 @@
+from .geocoding import GeocodeResult, GeocoderInterface, GeocodingError, NominatimGeocoder
 from .optimization import OptimizationService
 from .orders import OrdersService
-from .routes import RoutesService
 
-__all__ = ["OptimizationService", "OrdersService", "RoutesService"]
+__all__ = [
+    "GeocodeResult",
+    "GeocoderInterface",
+    "GeocodingError",
+    "NominatimGeocoder",
+    "OptimizationService",
+    "OrdersService",
+]

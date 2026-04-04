@@ -3,9 +3,26 @@
 {% block title %}Optimize{% endblock %}
 
 {% block content %}
+<section class="p-4">
+  <div class="d-flex align-items-center justify-content-between mb-4">
+    <div>
+      <h1 class="h3 mb-1">Optimize</h1>
+      <p class="text-secondary mb-0">Review the current orders and run the optimizer when you are ready.</p>
+    </div>
+    <button
+      type="button"
+      class="btn btn-primary"
+      hx-post="{{ data.optimize_url }}"
+      hx-target="#optimization-orders"
+      hx-swap="outerHTML"
+    >
+      {{ data.message }}
+    </button>
+  </div>
 
-Optimize
-
+  {% with data=data.orders_list %}
+    {% include "partials/optimization_orders.html" %}
+  {% endwith %}
+</section>
 
 {% endblock %}
-

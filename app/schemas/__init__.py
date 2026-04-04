@@ -6,7 +6,6 @@ from .orders import (
     OrdersPageData,
     StoredOrder,
 )
-from .routes import RoutesPageData
 
 __all__ = [
     "CreateOrderInput",
@@ -14,6 +13,5 @@ __all__ = [
     "OrderFormElement",
     "OrderCreatedMessage",
     "OrdersPageData",
-    "RoutesPageData",
     "StoredOrder",
 ]

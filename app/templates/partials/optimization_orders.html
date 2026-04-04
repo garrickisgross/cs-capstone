@@ -1,0 +1,22 @@
+<section id="optimization-orders" class="border rounded p-3">
+  <div class="d-flex align-items-center justify-content-between mb-3">
+    <h2 class="h5 mb-0">{{ data.title }}</h2>
+    <span class="text-secondary">{{ data.orders|length }} orders</span>
+  </div>
+
+  {% if data.orders %}
+    <div class="list-group optimization-orders-list">
+      {% for order in data.orders %}
+        <article class="list-group-item optimization-order-item">
+          <div class="fw-semibold">{{ order.address }}</div>
+          <div>{{ order.city }}, {{ order.st }}</div>
+          {% if order.description %}
+            <div class="small text-secondary">{{ order.description }}</div>
+          {% endif %}
+        </article>
+      {% endfor %}
+    </div>
+  {% else %}
+    <p class="mb-0 text-secondary">{{ data.empty_message }}</p>
+  {% endif %}
+</section>
