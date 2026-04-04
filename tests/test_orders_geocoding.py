@@ -1,9 +1,12 @@
 import unittest
+from pathlib import Path
+from tempfile import TemporaryDirectory
 from unittest.mock import Mock
 
 import requests
 
 from app.db.in_memory import InMemoryStorage
+from app.db.sqlite import SQLiteStorage
 from app.schemas.orders import CreateOrderInput, StoredOrder
 from app.services.geocoding import GeocodingError, NominatimGeocoder
 from app.services.optimization import (
@@ -270,6 +273,83 @@ class OptimizationServiceTests(unittest.TestCase):
         self.assertEqual(second_result.summary.original_distance, 0.0)
         self.assertEqual(second_result.summary.optimized_distance, 0.0)
         self.assertEqual(second_result.summary.distance_saved, 0.0)
+
+
+class SQLiteStorageTests(unittest.TestCase):
+    def test_add_order_and_list_orders_round_trip(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            storage = SQLiteStorage(Path(temp_dir) / "orders.db")
+            order = build_stored_order("a", 32.7767, -96.797)
+
+            storage.add_order(order)
+
+            self.assertEqual(storage.list_orders(), [order])
+
+    def test_list_unoptimized_orders_filters_out_completed_rows(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            storage = SQLiteStorage(Path(temp_dir) / "orders.db")
+            current_order = build_stored_order("current", 32.7767, -96.797, optimized=False)
+            done_order = build_stored_order("done", 29.7604, -95.3698, optimized=True)
+            storage.add_order(current_order)
+            storage.add_order(done_order)
+
+            self.assertEqual(storage.list_unoptimized_orders(), [current_order])
+
+    def test_mark_orders_optimized_updates_only_targeted_ids(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            storage = SQLiteStorage(Path(temp_dir) / "orders.db")
+            first_order = build_stored_order("a", 32.7767, -96.797, optimized=False)
+            second_order = build_stored_order("b", 29.7604, -95.3698, optimized=False)
+            storage.add_order(first_order)
+            storage.add_order(second_order)
+
+            storage.mark_orders_optimized(["a"])
+
+            self.assertEqual(
+                storage.list_orders(),
+                [
+                    first_order.model_copy(update={"optimized": True}),
+                    second_order,
+                ],
+            )
+
+    def test_storage_persists_across_instances(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            database_path = Path(temp_dir) / "orders.db"
+            first_storage = SQLiteStorage(database_path)
+            order = build_stored_order("a", 32.7767, -96.797)
+            first_storage.add_order(order)
+
+            second_storage = SQLiteStorage(database_path)
+
+            self.assertEqual(second_storage.list_orders(), [order])
+
+    def test_services_can_share_persisted_orders_across_storage_instances(self) -> None:
+        with TemporaryDirectory() as temp_dir:
+            database_path = Path(temp_dir) / "orders.db"
+            geocoder = Mock()
+            geocoder.geocode_address.return_value.latitude = 32.7767
+            geocoder.geocode_address.return_value.longitude = -96.797
+
+            OrdersService(SQLiteStorage(database_path), geocoder).create_order(
+                CreateOrderInput(
+                    address="123 Main St",
+                    city="Dallas",
+                    st="TX",
+                )
+            )
+
+            optimized_orders = OptimizationService(
+                SQLiteStorage(database_path)
+            ).build_optimized_orders_list().orders
+
+            self.assertEqual(len(optimized_orders), 1)
+            self.assertTrue(optimized_orders[0].optimized)
+            self.assertEqual(optimized_orders[0].stop_number, 1)
+            self.assertEqual(
+                SQLiteStorage(database_path).list_unoptimized_orders(),
+                [],
+            )
 
 
 if __name__ == "__main__":

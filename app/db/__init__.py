@@ -1,4 +1,5 @@
 from .base import StorageInterface
 from .in_memory import InMemoryStorage
+from .sqlite import SQLiteStorage
 
-__all__ = ["InMemoryStorage", "StorageInterface"]
+__all__ = ["InMemoryStorage", "SQLiteStorage", "StorageInterface"]
