@@ -71,4 +71,4 @@ This enhancement most strongly supports the following course outcomes:
 - **Design and evaluate computing solutions that solve a given problem using computer science practices and standards** by applying layered architecture and maintainable design
 - **Demonstrate an ability to use well-founded techniques, skills, and tools in computing practices** by using FastAPI patterns such as dependency injection, modular routing, and structured validation
 
-It also partially supports the security outcome because stronger validation and cleaner data flow reduce the chance of malformed input causing problems, even though the application still does not implement full authentication or access control.
+It also partially supports the security outcome because stronger validation and cleaner data flow reduce the chance of malformed input causing problems.
