@@ -5,7 +5,7 @@ Welcome to my Computer Science capstone ePortfolio. This portfolio highlights ho
 ## Portfolio Contents
 
 - [Professional Self-Assessment](self-assessment.md)
-- [Code Review Overview](code-review.md)
+- [Code Review](https://youtu.be/A0_eAhsKsKo?si=HOAH4OJYlFaaglve)
 - [Artifact Overview](artifact-overview.md)
 - [Software Design and Engineering Enhancement](software-design.md)
 - [Algorithms and Data Structures Enhancement](algorithms.md)
@@ -18,12 +18,3 @@ Welcome to my Computer Science capstone ePortfolio. This portfolio highlights ho
 - Algorithms branch: `[algos-and-data-structs](https://github.com/garrickisgross/cs-capstone/tree/algos-and-data-structs)`
 - Database branch: `[databases](https://github.com/garrickisgross/cs-capstone/tree/databases)`
 
-## Notes for Final Submission
-
-This site is designed to present the work directly in GitHub Pages rather than as a list of downloads. Each enhancement page explains what changed, why the enhancement mattered, what I learned, and how the enhancement aligns with the CS 499 course outcomes.
-
-You can also add the following optional items to strengthen the final presentation:
-
-- screenshots of the application before and after enhancement
-- a short embedded or linked code review video
-- links to key files or commits for each branch
