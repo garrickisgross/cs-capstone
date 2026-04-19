@@ -13,8 +13,8 @@ Welcome to my Computer Science capstone ePortfolio. This portfolio highlights ho
 
 ## Repository and Artifact Links
 
-- Original artifact branch: `[main](https://github.com/garrickisgross/cs-capstone/tree/main)`
-- Software design branch: `[software-design](https://github.com/garrickisgross/cs-capstone/tree/software-design)`
-- Algorithms branch: `[algos-and-data-structs](https://github.com/garrickisgross/cs-capstone/tree/algos-and-data-structs)`
-- Database branch: `[databases](https://github.com/garrickisgross/cs-capstone/tree/databases)`
+- Original artifact branch: [main](https://github.com/garrickisgross/cs-capstone/tree/main)
+- Software design branch: [software-design](https://github.com/garrickisgross/cs-capstone/tree/software-design)
+- Algorithms branch: [algos-and-data-structs](https://github.com/garrickisgross/cs-capstone/tree/algos-and-data-structs)
+- Database branch: [databases](https://github.com/garrickisgross/cs-capstone/tree/databases)
 
